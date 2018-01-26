@@ -1,16 +1,26 @@
 import { createStore, applyMiddleware, compose } from 'redux'
-import { routerMiddleware } from 'react-router-redux'
 import thunk from 'redux-thunk'
-import createHistory from 'history/createBrowserHistory'
 import rootReducer from '../modules'
+import firebase from 'firebase'
+import 'firebase/firestore'
+import { reactReduxFirebase } from 'react-redux-firebase'
+import { reduxFirestore } from 'redux-firestore'
 
-export const history = createHistory()
+const fbConfig = {
+
+}
+const rrfConfig = {
+    userProfile: 'users',
+    useFirestoreForProfile: true
+}
+
+firebase.initializeApp(fbConfig)
+firebase.firestore()
 
 const initialState = {}
 const enhancers = []
 const middleware = [
-    thunk,
-    routerMiddleware(history)
+    thunk
 ]
 
 if (process.env.NODE_ENV === 'development') {
@@ -22,6 +32,8 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const composedEnhancers = compose(
+    reactReduxFirebase(firebase, rrfConfig),
+    reduxFirestore(firebase),
     applyMiddleware(...middleware),
     ...enhancers
 )

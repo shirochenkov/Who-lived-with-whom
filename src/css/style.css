@@ -1,0 +1,21 @@
+.site {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.site-content {
+    flex: 1;
+    padding: 50px;
+    background: #fff;
+}
+
+.login-form {
+    max-width: 300px;
+    margin: auto;
+}
+
+.login-form-button {
+    margin-top: 15px;
+    width: 100%;
+}
