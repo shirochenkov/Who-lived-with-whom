@@ -1,7 +1,7 @@
 import React from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
+import { firebaseConnect } from 'react-redux-firebase'
 import { Redirect } from 'react-router-dom'
 import { Form, Input, Button } from 'antd'
 const FormItem = Form.Item;
@@ -34,10 +34,12 @@ class Login extends React.Component {
     }
 
     render() {
+        const { from } = this.props.location.state || { from: { pathname: '/' } }
+
         return (
-            <div>
+            <div className="wrapp-content">
                 {this.state.redirectToReferrer && (
-                    <Redirect to='/'/>
+                    <Redirect to={from}/>
                 )}
                 <Form onSubmit={this.handleSubmit} className="login-form">
                     <FormItem>

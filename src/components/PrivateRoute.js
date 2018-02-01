@@ -29,4 +29,3 @@ export default compose(
     firebaseConnect(),
     connect(({ firebase: { auth } }) => ({ auth }))
 )(PrivateRoute)
-

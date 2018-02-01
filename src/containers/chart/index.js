@@ -3,30 +3,39 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firestoreConnect } from 'react-redux-firebase'
 import moment from 'moment'
-import ReactGantt from 'gantt-for-react';
+import TimeLine from '../../components/TimeLine'
 
 class Chart extends React.Component {
-    componentDidMount() {
-
+    createCustomToolTip = (author) => {
+        let momentDateFrom = moment(author.dateFrom)
+        let momentDateTo = moment(author.dateTo)
+        return `<div class="chart-tooltip">
+                    <div><b>${author.name}</b></div>
+                    <hr>
+                    <div>
+                        <b>Годы жизни:</b> ${momentDateFrom.format('ll')} - ${momentDateTo.format('ll')}
+                    </div>
+                    <div>
+                        <b>Прожил:</b> ${momentDateFrom.to(momentDateTo, true)}
+                    </div>
+                </div>`
     }
 
     render () {
-        this.props.authors && console.log(this.props.authors)
-        const tasks = this.props.authors && this.props.authors.map(author => {
+        const rows = this.props.authors && this.props.authors.map(author => {
             let {id, name, dateFrom, dateTo} = author
-            return {
+            return [
                 id,
                 name,
-                start: moment(dateFrom).format("YYYY-MM-DD"),
-                end: moment(dateTo).format("YYYY-MM-DD"),
-                progress: 20
-            }
+                this.createCustomToolTip(author),
+                new Date(dateFrom),
+                new Date(dateTo)
+            ]
         })
 
         return (
-            <div>
-                <h1>Chart</h1>
-                { tasks && <ReactGantt tasks={tasks} /> }
+            <div className="gantt-container">
+                {rows && (<TimeLine rows={rows} container={this.timeline} />)}
             </div>
         )
     }
@@ -38,6 +47,8 @@ const mapStateToProps = state => ({
 })
 
 export default compose(
-    firestoreConnect(['authors']),
+    firestoreConnect(() => [
+        { collection: 'authors', orderBy: 'dateFrom' }
+    ]),
     connect(mapStateToProps)
 )(Chart)

@@ -5,9 +5,14 @@
 }
 
 .site-content {
+    display: flex;
     flex: 1;
     padding: 50px;
     background: #fff;
+}
+
+.wrapp-content {
+    width: 100%;
 }
 
 .login-form {
@@ -18,4 +23,38 @@
 .login-form-button {
     margin-top: 15px;
     width: 100%;
+}
+
+.gantt-container {
+    display: flex;
+    flex: 1;
+}
+
+.gantt-container > div,
+.gantt-container > div > div {
+    width: 100%;
+    height: 100%;
+}
+
+.gantt-container svg g rect,
+.gantt-container svg g path {
+    stroke-width: 0;
+}
+
+.chart-tooltip {
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 10px 15px;
+    white-space: nowrap;
+}
+
+.chart-tooltip > hr {
+    margin-left: -15px;
+    margin-right: -15px;
+    border: none;
+    border-top: 1px solid #ddd;
+}
+
+.chart-tooltip > div {
+    margin: 5px 0;
 }

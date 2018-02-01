@@ -7,7 +7,7 @@ import { reactReduxFirebase } from 'react-redux-firebase'
 import { reduxFirestore } from 'redux-firestore'
 
 const fbConfig = {
-
+    
 }
 const rrfConfig = {
     userProfile: 'users',

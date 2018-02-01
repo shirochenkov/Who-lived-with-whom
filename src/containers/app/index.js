@@ -1,21 +1,22 @@
 import React from 'react';
-import { Switch, withRouter, Route, Link } from 'react-router-dom'
-import { compose } from 'redux'
-import { connect } from 'react-redux'
-import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
+import {Switch, withRouter, Route} from 'react-router-dom'
+import {compose} from 'redux'
+import {connect} from 'react-redux'
+import {firebaseConnect} from 'react-redux-firebase'
 import Login from '../login'
 import Chart from '../chart'
 import Authors from '../authors'
 import PrivateRoute from '../../components/PrivateRoute'
-import { Layout, Menu } from 'antd';
-const { Header, Footer, Content } = Layout;
+import {Layout, Menu} from 'antd';
+const {Header, Footer, Content} = Layout;
 
 class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            uid: null
-        };
+            uid: null,
+            selectedKeys: []
+        }
     }
 
     componentDidMount() {
@@ -30,6 +31,21 @@ class App extends React.Component {
                 this.setState({uid: null});
             }
         });
+
+    }
+
+    componentWillReceiveProps() {
+        this.setState({ selectedKeys: [this.props.history.location.pathname] });
+    }
+
+    linkTo = item => {
+        item.key === 'logout' ? this.logOut() : this.props.history.push(item.key)
+    }
+
+    logOut = () => {
+        this.props.firebase.auth().signOut().then(() => {
+            this.props.history.push('/')
+        })
     }
 
     render() {
@@ -40,23 +56,26 @@ class App extends React.Component {
                         theme="dark"
                         mode="horizontal"
                         defaultSelectedKeys={[this.props.location.pathname]}
-                        style={{ lineHeight: '64px' }}
+                        selectedKeys={this.state.selectedKeys}
+                        style={{lineHeight: '64px'}}
+                        onClick={this.linkTo}
                     >
-                        <Menu.Item key="/"><Link to="/">Chart</Link></Menu.Item>
-                        <Menu.Item key="/authors"><Link to="/authors">Authors</Link></Menu.Item>
-                        {/*<Menu.Item key="/login"><Link to="/login">Login</Link></Menu.Item>*/}
+                        <Menu.Item key="/">Главная</Menu.Item>
+                        {this.state.uid && (<Menu.Item key="/authors">Писатели</Menu.Item>)}
+                        {!this.state.uid && (<Menu.Item key="/login">Войти</Menu.Item>)}
+                        {this.state.uid && (<Menu.Item key="logout">Выйти</Menu.Item>)}
                     </Menu>
                 </Header>
                 <Layout>
                     <Content className="site-content">
                         <Switch>
-                            <Route exact path="/login" component={Login} />
-                            <Route exact path="/" component={Chart} />
-                            <PrivateRoute path="/authors" component={Authors} />
+                            <Route exact path="/login" component={Login}/>
+                            <Route exact path="/" component={Chart}/>
+                            <PrivateRoute path="/authors" component={Authors}/>
                         </Switch>
                     </Content>
                 </Layout>
-                <Footer>footer</Footer>
+                <Footer></Footer>
             </Layout>
         )
     }
@@ -66,6 +85,6 @@ class App extends React.Component {
 export default withRouter(
     compose(
         firebaseConnect(),
-        connect(({ firebase: { auth } }) => ({ auth }))
+        connect(({firebase: {auth}}) => ({auth}))
     )(App)
 )

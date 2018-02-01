@@ -27,7 +27,7 @@ class Authors extends React.Component {
         }
 
         return (
-            <div>
+            <div className="wrapp-content">
                 <AddAuthorForm />
                 <List
                     style={{marginTop: 50}}
@@ -57,6 +57,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch)
 
 export default compose(
-    firestoreConnect(['authors']),
+    firestoreConnect(() => [
+        { collection: 'authors', orderBy: 'dateFrom' }
+    ]),
     connect(mapStateToProps, mapDispatchToProps)
 )(Authors)
